@@ -1,0 +1,82 @@
+Exchange rate: 1 USD == 16.89 MXN
+
+One factor that determines exchange rate for customer is the exchange rate that our partners charge us
+
+Partners have an API that will be integrated with eventually
+ - but right now, there's a JSON file that represents data structure one of partners returns
+
+Exchange rates specified by these factors:
+ 1. termination country -- country money is being sent to
+ 2. termination currency -- currency that the receiver gets (e.g. MXN, PHP, USD)
+ 3. payment method -- how the money is funded by the sender (e.g. Debit Card, Bank Account)
+ 4. delivery method -- how money is being collected by receiver (Debit, Deposit, Cash)
+ 5. rate -- exchange rate used to convert USD to another currency
+
+** REQUIREMENTS **
+Build system that receives HTTP request to API 
+ - returns all of the exchange rates for a specific country code
+
+Needs an API and unit tests
+ - no auth is required
+
+** API SHAPE **
+GET /api/exchange-rates?country=$COUNTRY_CODE (e.g. MEX or PHL)
+Response: 
+ 1. if exchange rates for the country are found, return JSON array of exchange rates
+ 2. if exchange rates NOT found, return appropriate REST response
+
+** DATA INGEST **
+First program will need to ingest the JSON file containing one partner's exchange rates
+ - built with the intent that the file reading will be replaced by API call in future
+   also we will expand the solution to include other partner's APIs too
+ - ingest data will need to be validated (HOW?) 
+ - some partners will return historical exchange rates, we only want the most recent exchange rate
+
+** EXCHANGE RATE ADJUSTMENT **
+Each country has a flat rate that needs to be added to partner rate
+Then round up to two decimal places (e.g. 13.436 -> 13.44)
+
+● Mexico = 0.024m
+● Philippines = 2.437m
+● Guatemala = 0.056m
+● India = 3.213m
+
+
+** PLAN **
+1. ingest the data, some sort of command-line executeable that will:
+ 1.1. read the file as JSON 
+ 1.2. iterate over the array and validate each entry in PartnerRates array 
+      data type validation -- some sort of schema? 
+      sort the entries by AcquiredDate and only save the most recent one for a given (Currency, PaymentMethod, DeliveryMethod) combo
+ 1.3. probably a csproj that's separate from the PangeaApi project
+ 1.4. stick it in an in-memory database 
+ 1.5. Makefile that'll have a command to ingest the file (wipe the previous entry from db before doing this)
+2. build the API
+ 2.1. single endpoint GET /api/exchange-rates?country=$COUNTRY_CODE
+ 2.2. validate the COUNTRY_CODE query param against the list (store this as a constant on the API)
+      return a 400 BAD REQUEST if provided country code doesn't appear in list
+ 2.3. look up the CURRENCY_CODE based on COUNTRY_CODE and use it to query db
+ 2.4. return the list of exchange rates (see output for repsonse payload shape)
+3. stick some stuff in a service for testability
+ 3.1. the chunks that interact with entity framework for sure
+ 3.2. calculation of the exchange rate 
+ 3.3. validation of the input data, maybe?
+
+
+** OUTPUT ** 
+[
+    {
+        "CurrencyCode":"MXN",
+        "CountryCode":"MEX",
+        "PangeaRate": 17.24,
+        "PaymentMethod": "debit",
+        "DeliveryMethod": "cash"
+    },
+    {
+        "CurrencyCode":"MXN",
+        "CountryCode":"MEX",
+        "PangeaRate": 17.31,
+        "PaymentMethod": "cash",
+        "DeliveryMethod": "deposit"
+    }
+]
