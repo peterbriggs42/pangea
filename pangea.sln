@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PangeaApi", "PangeaApi\Pang
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PangeaIngest", "PangeaIngest\PangeaIngest.csproj", "{FE98B19D-3E9F-4486-9358-8B0524D948F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PangeaModels", "PangeaModels\PangeaModels.csproj", "{B86B8AB9-E9EC-41D5-A13E-1E7C2FBA6031}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FE98B19D-3E9F-4486-9358-8B0524D948F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE98B19D-3E9F-4486-9358-8B0524D948F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE98B19D-3E9F-4486-9358-8B0524D948F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B86B8AB9-E9EC-41D5-A13E-1E7C2FBA6031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B86B8AB9-E9EC-41D5-A13E-1E7C2FBA6031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B86B8AB9-E9EC-41D5-A13E-1E7C2FBA6031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B86B8AB9-E9EC-41D5-A13E-1E7C2FBA6031}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
