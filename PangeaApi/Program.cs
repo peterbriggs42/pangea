@@ -12,8 +12,17 @@ builder.Services.AddDbContext<PangeaContext>(opt =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IPartnerRateIngest, PartnerRateIngest>();
+
 
 var app = builder.Build();
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+    var myDependency = services.GetRequiredService<IPartnerRateIngest>();
+    myDependency.IngestPartnerRates();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -8,7 +8,7 @@ public class ExchangeRateDto
 
     public string CountryCode { get; set; } = null!;
 
-    public double PangeaRate { get; set; } = 0.0;
+    public decimal PangeaRate { get; set; } = 0.0m;
 
     public string PaymentMethod { get; set; } = null!;
 

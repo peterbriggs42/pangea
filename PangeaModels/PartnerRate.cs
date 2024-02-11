@@ -7,7 +7,9 @@ public class PartnerData
 
 public class PartnerRate
 {
-    // worth making the string fields into enums?
+    // TODO consider making the string fields into enums
+
+    public long Id { get; set; }
 
     public string Currency { get; set; } = null!;
 
@@ -15,7 +17,7 @@ public class PartnerRate
 
     public string DeliveryMethod { get; set; } = null!;
 
-    public double Rate { get; set; } = 0.0;
+    public decimal Rate { get; set; } = 0.0m;
 
     public DateTime? AcquiredDate { get; set; } = null!;
 }
