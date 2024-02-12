@@ -1,8 +1,19 @@
 ### Running the solution
+To configure, test, and run the solution, run the following commands:
+```
+dotnet dev-certs https --trust
+dotnet test
+dotnet run --project PangeaApi/PangeaApi.csproj --launch-profile https
+```
 
+That should generate and trust the necessary local self-signed https cert, run the unit tests, and run the API server. When the API server spins up, it creates an in-memory database and populates it with the contents of the partner rates JSON file, which is included in this repo. If you have `make` installed and would rather run a single command, you can use `make first-run
+
+To manually verify that the server is working, you can run something like `curl https://localhost:7261/api/exchange-rates?country=mex`. You can also use the auto-generated swagger site at `https://localhost:7261/swagger`.
 
 
 ### Things I would have done with more time
+
+Full disclosure: I probably spent closer to 4 hours of core coding time on this than the specified 3 hours -- sorry about that. My current role is mostly in Python and my C# is a bit rusty (last framework version I worked in was .NET 5). So it took a bit of extra time adjusting to the new features and conventions with .NET 8. I spent another hour or so on testing, cleanup, packaging, and documentation. 
 
 NOTE: I tried to sprinkle in TODOs throughout the solution for specific places where I had plans for improvements I'd implement if given more time.
 I'll outline some of the big themes in this section.
@@ -12,8 +23,9 @@ The instructions only specify what should happen if the `country` query paramete
 That said, I think it'd be more conventional REST design to have the endpoint return all Exchange Rates in the event that the user doesn't supply a 
 country code via the HTTP request. I think it makes sense to return a 400 Bad Request in the event that the user *does* supply a country code that's invalid, though.
 
-I didn't have time to implement this requirement 
+I wasn't able to implement this requirement 
 >  Some partners will return multiple instances of the same exchange rate that were collected at different times, we only ever want to use the most recent exchange rate
+Right now it doesn't filter out old partner rates, so there are duplicates in my API's response. Easy enough to filter out the old ones on ingest, I just didn't have time. 
 
 Exception handling could be improved as well, I didn't go over the potential failure points with a fine-toothed comb but obvious places to handle 
 failure could be the ingest -- if the partner rate file isn't found or is invalid we just let the file IO code throw whatever default exception and don't process it.
@@ -28,4 +40,6 @@ That'd also make the steps to pull the solution and run it a bit easier since e.
 
 
 #### Tests
-I only had time to write rudimentary unit tests against one class -- ExchangeRateController. With further time I'd also like to test the ingest service,
+I only had time to write rudimentary unit tests against one class -- ExchangeRateController. With further time I'd also like to test the ingest service, which would have a greater test surface if I had implemented the validation and duplicate-handling mentioned in the requirements.
+
+Integration tests would be good in a production system as well, though I suppose that's not even mentioned in the requirements.
