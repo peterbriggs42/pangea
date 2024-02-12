@@ -4,10 +4,15 @@ namespace Pangea.Models;
 
 public class PangeaContext : DbContext
 {
+    public PangeaContext() 
+        : base()
+    {
+    }
+
     public PangeaContext(DbContextOptions<PangeaContext> options)
         : base(options)
     {
     }
 
-    public DbSet<PartnerRate> PartnerRates { get; set; } = null!;
+    public virtual DbSet<PartnerRate> PartnerRates { get; set; } = null!;
 }

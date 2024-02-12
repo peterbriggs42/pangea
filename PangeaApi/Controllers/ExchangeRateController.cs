@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Pangea.Models;
 
 namespace Pangea.Api.Controllers;
@@ -55,25 +54,30 @@ public class ExchangeRateController : ControllerBase
     1. test the 400 behavior for country code
       - DONE
     2. ingest the json file inside of the API startup logic
+      - DONE
     3. fetch the exchange rates matching the country code using EF
+      - DONE
     4. stick that logic inside of an injectable service
+      - WON'T DO
     5. write unit tests against the service
+      - DONE
     6. put the ingest logic also in the service and write tests against it?
-    
+      - NO TIME
     */ 
 
-    // TODO either write stuff to logs or remove this
-    private readonly ILogger<ExchangeRateController> _logger;
+    // TODO if I had more time I'd implement logging. Probably more useful for the 
+    //      ingest than the API I suppose...
+    // private readonly ILogger<ExchangeRateController> _logger;
     private readonly PangeaContext _context;
 
 
-    public ExchangeRateController(ILogger<ExchangeRateController> logger, PangeaContext context)
+    public ExchangeRateController(PangeaContext context)
     {
-        _logger = logger;
         _context = context;
     }
 
-    [HttpGet(Name = "GetBlahBlah")]
+    // TODO what is Name supposed to be here?
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<ExchangeRateDto>>> Get([FromQuery] string country)
     {
         // TODO consider making `country` an enum so that swagger can provide client with valid options
@@ -83,18 +87,16 @@ public class ExchangeRateController : ControllerBase
             return BadRequest($"Country code not valid: {country}");
         };
 
-        var allPartnerRates = _context.PartnerRates.ToList();
-
         var countryCurrencyLookup = Countries.First(x => x.CountryCode == country);
-        var exchangeRatesForCountry = await _context.PartnerRates
+        var exchangeRatesForCountry = _context.PartnerRates
             .Where(pr => pr.Currency == countryCurrencyLookup.CurrencyCode)
             .Select(pr => PartnerRateToExchangeRate(pr, countryCurrencyLookup))
-            .ToListAsync();
+            .ToList();
 
         return exchangeRatesForCountry;
     }
 
-    private ExchangeRateDto PartnerRateToExchangeRate(PartnerRate partnerRate, CountryCurrencyMapping countryCurrency)
+    private static ExchangeRateDto PartnerRateToExchangeRate(PartnerRate partnerRate, CountryCurrencyMapping countryCurrency)
     {
         return new ExchangeRateDto() 
         {
