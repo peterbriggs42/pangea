@@ -7,15 +7,12 @@ using Pangea.Models;
 namespace Pangea.Api.Tests;
 
 
-// TODO should also write tests for the ingest, even though that's kinda janky atm
-// IDEA maybe we write failing tests against the IngestService for all the behavior that's not yet implemented. Prob good for at least 10 brownie points :)
+// TODO if I had more time I'd write tests for the ingest service as well
 
 public class ExchangeRateControllerTests
 {
     [Fact]
-    // if you pass in a bogus country (or no country at all), returns BadRequest
-    // hmm -- if you pass in no country, I feel like the endpoint should return all results per REST convention...
-    public async void GetByCountry_Invalid_Country_ReturnsBadRequest()
+    public void GetByCountry_Invalid_Country_ReturnsBadRequest()
     {
         var mockSet = new Mock<DbSet<PartnerRate>>();
         var mockContext = new Mock<PangeaContext>();
@@ -23,14 +20,14 @@ public class ExchangeRateControllerTests
 
         var _controller = new ExchangeRateController(mockContext.Object);
 
-        var response = await _controller.Get("BLAH");
+        var response = _controller.Get("BLAH");
         Assert.IsType<BadRequestObjectResult>(response.Result);
     }
 
     // if you pass in a legit country code, endpoint should return only the Exchange Rates
     // that match the country code
     [Fact]
-    public async void GetByCountry_ValidCountry_ReturnsMatchingExchangeRates()
+    public void GetByCountry_ValidCountry_ReturnsMatchingExchangeRates()
     {
         // TODO put this in a reusable helper method
         var data = GetMockPartnerRatesAllCountries().AsQueryable();
@@ -44,7 +41,7 @@ public class ExchangeRateControllerTests
         var _controller = new ExchangeRateController(mockContext.Object);
 
         var validCountryCode = "MEX";
-        var response = await _controller.Get(validCountryCode);
+        var response = _controller.Get(validCountryCode);
 
         Assert.Single(response.Value!);
     }

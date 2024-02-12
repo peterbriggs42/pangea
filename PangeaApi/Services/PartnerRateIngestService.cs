@@ -5,6 +5,9 @@ namespace Pangea.Api.Services
 {
     public class PartnerRateIngestService : IPartnerRateIngestService
     {
+        // TODO if I had more time I'd implement logging. We'd want to log e.g. if the service can't find the file, or runs into errors during parsing
+        // private readonly ILogger<PartnerRateIngestService> _logger;
+
         private PangeaContext _context;
         public PartnerRateIngestService(PangeaContext context)
         {
