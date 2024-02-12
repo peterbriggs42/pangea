@@ -6,6 +6,8 @@ dotnet test
 dotnet run --project PangeaApi/PangeaApi.csproj --launch-profile https
 ```
 
+I'm working on macOS so I can't confirm that everything will work perfect on Windows or Linux. If you have .NET 8 installed with the CLI, hopefully the commands are system-agnostic enough that the API boots and runs without issue. Do let me know if you run into an issue running the solution.
+
 That should generate and trust the necessary local self-signed https cert, run the unit tests, and run the API server. When the API server spins up, it creates an in-memory database and populates it with the contents of the partner rates JSON file, which is included in this repo. If you have `make` installed and would rather run a single command, you can use `make first-run
 
 To manually verify that the server is working, you can run something like `curl https://localhost:7261/api/exchange-rates?country=mex`. You can also use the auto-generated swagger site at `https://localhost:7261/swagger`.
